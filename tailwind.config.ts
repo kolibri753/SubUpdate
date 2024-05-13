@@ -8,6 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        // Define your custom colors here
+        customColor1: "#ff0000", // Example custom color 1
+        customColor2: "#00ff00", // Example custom color 2
+        customColor3: "#0000ff", // Example custom color 3
+        // Add more custom colors as needed
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
