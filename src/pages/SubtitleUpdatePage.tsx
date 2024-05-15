@@ -16,6 +16,10 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 		handleContentChange,
 		handleTimingChange,
 		downloadSubtitles,
+		deleteSubtitleBlock,
+		restoreSubtitleBlock,
+		addSubtitleBlockAfter,
+		addSubtitleBlockBefore,
 	} = useSubtitleData(subtitleData);
 
 	return (
@@ -37,6 +41,9 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 						subtitle={subtitle}
 						onContentChange={handleContentChange}
 						onTimingChange={handleTimingChange}
+						onDelete={deleteSubtitleBlock}
+						onAddAfter={addSubtitleBlockAfter}
+						onAddBefore={addSubtitleBlockBefore}
 					/>
 				))}
 			</div>
@@ -47,8 +54,20 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 					<ul>
 						{changesHistory.map((change, index) => (
 							<li key={index} className="mb-2">
-								Block {change.index + 1}: {change.field} changed from "{change.oldValue}"
-								to "{change.newValue}"
+								Block {change.index + 1}:{" "}
+								{change.field === "added"
+									? `added ${change.newValue.includes("after") ? "after" : "before"} ${
+											change.blockInfo
+									  }`
+									: `${change.field} changed from "${change.oldValue}" to "${change.newValue}"`}
+								{change.field === "deleted" && (
+									<button
+										className="ml-2 text-blue-500 hover:underline"
+										onClick={() => restoreSubtitleBlock(change.index)}
+									>
+										Restore
+									</button>
+								)}
 							</li>
 						))}
 					</ul>

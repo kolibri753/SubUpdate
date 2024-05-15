@@ -6,6 +6,9 @@ interface SubtitleBlockProps {
 	subtitle: SubData;
 	onContentChange: (index: number, newContent: string) => void;
 	onTimingChange: (index: number, newTiming: string) => void;
+	onDelete: (index: number) => void;
+	onAddAfter: (index: number) => void;
+	onAddBefore: (index: number) => void;
 }
 
 const SubtitleBlock: React.FC<SubtitleBlockProps> = ({
@@ -13,6 +16,9 @@ const SubtitleBlock: React.FC<SubtitleBlockProps> = ({
 	subtitle,
 	onContentChange,
 	onTimingChange,
+	onDelete,
+	onAddAfter,
+	onAddBefore,
 }) => {
 	const handleContentChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
@@ -22,6 +28,18 @@ const SubtitleBlock: React.FC<SubtitleBlockProps> = ({
 
 	const handleTimingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		onTimingChange(index, event.target.value);
+	};
+
+	const handleDelete = () => {
+		onDelete(index);
+	};
+
+	const handleAddAfter = () => {
+		onAddAfter(index);
+	};
+
+	const handleAddBefore = () => {
+		onAddBefore(index);
 	};
 
 	return (
@@ -59,6 +77,30 @@ const SubtitleBlock: React.FC<SubtitleBlockProps> = ({
 								className="w-full p-2 border rounded bg-customColor3 text-customColor4"
 								rows={3}
 							/>
+						</td>
+					</tr>
+					<tr>
+						<td className="border p-2 flex justify-between">
+							<div>
+								<button
+									onClick={handleAddBefore}
+									className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mr-2"
+								>
+									Add Before
+								</button>
+								<button
+									onClick={handleAddAfter}
+									className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+								>
+									Add After
+								</button>
+							</div>
+							<button
+								onClick={handleDelete}
+								className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+							>
+								Delete
+							</button>
 						</td>
 					</tr>
 				</tbody>

@@ -9,4 +9,5 @@ export interface Change {
 	field: string;
 	oldValue: string;
 	newValue: string;
+	blockInfo?: string; 
 }
