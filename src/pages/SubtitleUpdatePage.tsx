@@ -33,7 +33,7 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 			</div>
 			{/* Sub */}
 			<div className="row-start-2 px-4 overflow-auto">
-				{updatedSubtitleData.map((subtitle, index) => (
+				{updatedSubtitleData && updatedSubtitleData.map((subtitle, index) => (
 					<SubtitleBlock
 						key={index}
 						index={index}
@@ -51,7 +51,7 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 				<div className="mt-8">
 					<h2 className="text-2xl font-semibold mb-4">Changes</h2>
 					<ul>
-						{changesHistory.map((change, index) => (
+						{changesHistory && changesHistory.map((change, index) => (
 							<li key={index} className="mb-2">
 								Block {change.index + 1}:{" "}
 								{change.field === "added"
