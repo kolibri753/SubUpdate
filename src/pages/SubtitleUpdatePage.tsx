@@ -17,7 +17,6 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 		handleTimingChange,
 		downloadSubtitles,
 		deleteSubtitleBlock,
-		restoreSubtitleBlock,
 		addSubtitleBlockAfter,
 		addSubtitleBlockBefore,
 	} = useSubtitleData(subtitleData);
@@ -60,14 +59,6 @@ const SubtitleUpdatePage: React.FC<SubtitleUpdatePageProps> = ({
 											change.blockInfo
 									  }`
 									: `${change.field} changed from "${change.oldValue}" to "${change.newValue}"`}
-								{change.field === "deleted" && (
-									<button
-										className="ml-2 text-blue-500 hover:underline"
-										onClick={() => restoreSubtitleBlock(change.index)}
-									>
-										Restore
-									</button>
-								)}
 							</li>
 						))}
 					</ul>

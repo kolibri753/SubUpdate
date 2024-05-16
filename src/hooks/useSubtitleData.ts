@@ -58,32 +58,22 @@ const useSubtitleData = (initialData: SubData[]) => {
 		]);
 	};
 
-	const restoreSubtitleBlock = (index: number) => {
-		const deletedBlockString = changesHistory.find(
-			(change) => change.index === index && change.field === "deleted"
-		)?.oldValue;
-		if (deletedBlockString) {
-			const deletedBlock = JSON.parse(deletedBlockString) as SubData;
-			const updatedData = [...updatedSubtitleData];
-			updatedData.splice(index, 0, deletedBlock);
-			setUpdatedSubtitleData(
-				updatedData.map((subtitle, idx) => ({ ...subtitle, order: `${idx + 1}` }))
-			);
-			setChangesHistory((prev) =>
-				prev.filter(
-					(change) => !(change.index === index && change.field === "deleted")
-				)
-			);
-		}
-	};
-
 	const addSubtitleBlockAfter = (index: number) => {
 		const newBlock: SubData = {
 			order: `${index + 2}`,
-			timing: "",
+			timing: "00:00:00,000 --> 00:00:00,000",
 			content: "",
 		};
 		const updatedData = [...updatedSubtitleData];
+		const currentBlockTiming = updatedData[index]?.timing;
+		const nextBlockTiming = updatedData[index + 1]?.timing;
+
+		if (currentBlockTiming && nextBlockTiming) {
+			const [start] = currentBlockTiming.split(" --> ").slice(-1);;
+			const [end] = nextBlockTiming.split(" --> ");
+			newBlock.timing = `${start} --> ${end}`;
+		}
+
 		updatedData.splice(index + 1, 0, newBlock);
 		setUpdatedSubtitleData(
 			updatedData.map((subtitle, idx) => ({ ...subtitle, order: `${idx + 1}` }))
@@ -110,6 +100,15 @@ const useSubtitleData = (initialData: SubData[]) => {
 			content: "",
 		};
 		const updatedData = [...updatedSubtitleData];
+		const previousBlockTiming = updatedData[index - 1]?.timing;
+		const currentBlockTiming = updatedData[index]?.timing;
+
+		if (previousBlockTiming && currentBlockTiming) {
+			const [start] = previousBlockTiming.split(" --> ").slice(-1);;
+			const [end] = currentBlockTiming.split(" --> ");
+			newBlock.timing = `${start} --> ${end}`;
+		}
+
 		updatedData.splice(index, 0, newBlock);
 		setUpdatedSubtitleData(
 			updatedData.map((subtitle, idx) => ({ ...subtitle, order: `${idx + 1}` }))
@@ -150,7 +149,6 @@ const useSubtitleData = (initialData: SubData[]) => {
 		handleContentChange,
 		handleTimingChange,
 		deleteSubtitleBlock,
-		restoreSubtitleBlock,
 		addSubtitleBlockAfter,
 		addSubtitleBlockBefore,
 		downloadSubtitles,
