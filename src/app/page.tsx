@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react";
-import SubtitleUpdatePage from "../pages/SubtitleUpdatePage";
+import SubtitleManager from "../components/SubtitleManager";
 import SubtitleUploader from "../components/SubtitleUploader";
 import { SubData } from "../types";
 
@@ -17,7 +17,7 @@ export default function Home() {
       {!subtitleData ? (
         <SubtitleUploader onUpload={handleUpload} />
       ) : (
-        <SubtitleUpdatePage subtitleData={subtitleData} />
+        <SubtitleManager subtitleData={subtitleData} />
       )}
     </main>
   );
