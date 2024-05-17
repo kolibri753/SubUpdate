@@ -6,28 +6,35 @@ const useSubtitleData = (initialData: SubData[]) => {
 		useState<SubData[]>(initialData);
 	const [changesHistory, setChangesHistory] = useState<Change[]>([]);
 
+	const updateChangesHistory = (
+		index: number,
+		field: string,
+		oldValue: string,
+		newValue: string
+	) => {
+		const existingChangeIndex = changesHistory.findIndex(
+			(change) => change.index === index && change.field === field
+		);
+
+		if (existingChangeIndex !== -1) {
+			const updatedChangesHistory = [...changesHistory];
+			if (newValue === updatedChangesHistory[existingChangeIndex].oldValue) {
+				updatedChangesHistory.splice(existingChangeIndex, 1);
+			} else {
+				updatedChangesHistory[existingChangeIndex].newValue = newValue;
+			}
+			setChangesHistory(updatedChangesHistory);
+		} else {
+			setChangesHistory((prev) => [...prev, { index, field, oldValue, newValue }]);
+		}
+	};
+
 	const handleContentChange = (index: number, newContent: string) => {
 		const updatedData = [...updatedSubtitleData];
 		const oldContent = updatedData[index].content;
 		updatedData[index].content = newContent;
 		setUpdatedSubtitleData(updatedData);
-		const existingChangeIndex = changesHistory.findIndex(
-			(change) => change.index === index && change.field === "content"
-		);
-		if (existingChangeIndex !== -1) {
-			const updatedChangesHistory = [...changesHistory];
-			if (newContent === updatedChangesHistory[existingChangeIndex].oldValue) {
-				updatedChangesHistory.splice(existingChangeIndex, 1);
-			} else {
-				updatedChangesHistory[existingChangeIndex].newValue = newContent;
-			}
-			setChangesHistory(updatedChangesHistory);
-		} else {
-			setChangesHistory((prev) => [
-				...prev,
-				{ index, field: "content", oldValue: oldContent, newValue: newContent },
-			]);
-		}
+		updateChangesHistory(index, "content", oldContent, newContent);
 	};
 
 	const handleTimingChange = (index: number, newTiming: string) => {
@@ -35,10 +42,7 @@ const useSubtitleData = (initialData: SubData[]) => {
 		const oldTiming = updatedData[index].timing;
 		updatedData[index].timing = newTiming;
 		setUpdatedSubtitleData(updatedData);
-		setChangesHistory((prev) => [
-			...prev,
-			{ index, field: "timing", oldValue: oldTiming, newValue: newTiming },
-		]);
+		updateChangesHistory(index, "timing", oldTiming, newTiming);
 	};
 
 	const deleteSubtitleBlock = (index: number) => {
@@ -69,7 +73,7 @@ const useSubtitleData = (initialData: SubData[]) => {
 		const nextBlockTiming = updatedData[index + 1]?.timing;
 
 		if (currentBlockTiming && nextBlockTiming) {
-			const [start] = currentBlockTiming.split(" --> ").slice(-1);;
+			const [start] = currentBlockTiming.split(" --> ").slice(-1);
 			const [end] = nextBlockTiming.split(" --> ");
 			newBlock.timing = `${start} --> ${end}`;
 		}
@@ -96,7 +100,7 @@ const useSubtitleData = (initialData: SubData[]) => {
 	const addSubtitleBlockBefore = (index: number) => {
 		const newBlock: SubData = {
 			order: `${index + 1}`,
-			timing: "",
+			timing: "00:00:00,000 --> 00:00:00,000",
 			content: "",
 		};
 		const updatedData = [...updatedSubtitleData];
@@ -104,7 +108,7 @@ const useSubtitleData = (initialData: SubData[]) => {
 		const currentBlockTiming = updatedData[index]?.timing;
 
 		if (previousBlockTiming && currentBlockTiming) {
-			const [start] = previousBlockTiming.split(" --> ").slice(-1);;
+			const [start] = previousBlockTiming.split(" --> ").slice(-1);
 			const [end] = currentBlockTiming.split(" --> ");
 			newBlock.timing = `${start} --> ${end}`;
 		}
