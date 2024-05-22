@@ -59,11 +59,11 @@ const SubtitleManager: React.FC<SubtitleManagerProps> = ({ subtitleData }) => {
 									}`
 								) : (
 									<>
-										{`${change.field} changed from `}
-										<span className="text-yellow-400">"{change.oldValue}"</span>
-										{` to `}
-										<span className="text-green-300">"{change.newValue}"</span>
-									</>
+                    {`${change.field} changed from `}
+                    <span className="text-yellow-400">&quot;{change.oldValue}&quot;</span>
+                    {` to `}
+                    <span className="text-green-300">&quot;{change.newValue}&quot;</span>
+                  </>
 								)}
 							</li>
 						))}
