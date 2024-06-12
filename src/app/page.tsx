@@ -13,7 +13,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen">
+    <main className="flex flex-col items-center justify-center h-screen bg-black-500">
       {!subtitleData ? (
         <SubtitleUploader onUpload={handleUpload} />
       ) : (
