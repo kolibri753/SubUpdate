@@ -15,7 +15,7 @@ const SubtitleManager: React.FC<SubtitleManagerProps> = ({ subtitleData }) => {
 		handleTimingChange,
 		downloadSubtitles,
 		deleteSubtitleBlock,
-		addSubtitleBlockAfter,
+		addSubtitleBlocksAfter,
 		addSubtitleBlockBefore,
 	} = useSubtitleData(subtitleData);
 
@@ -40,7 +40,7 @@ const SubtitleManager: React.FC<SubtitleManagerProps> = ({ subtitleData }) => {
 							onContentChange={handleContentChange}
 							onTimingChange={handleTimingChange}
 							onDelete={deleteSubtitleBlock}
-							onAddAfter={addSubtitleBlockAfter}
+							onAddAfter={addSubtitleBlocksAfter} // Updated function
 							onAddBefore={addSubtitleBlockBefore}
 						/>
 					))}
@@ -53,18 +53,9 @@ const SubtitleManager: React.FC<SubtitleManagerProps> = ({ subtitleData }) => {
 						changesHistory.map((change, index) => (
 							<li key={index} className="mb-2">
 								Block {change.index + 1}:{" "}
-								{change.field === "added" ? (
-									`added ${change.newValue.includes("after") ? "after" : "before"} ${
-										change.blockInfo
-									}`
-								) : (
-									<>
-                    {`${change.field} changed from `}
-                    <span className="text-yellow-400">&quot;{change.oldValue}&quot;</span>
-                    {` to `}
-                    <span className="text-green-300">&quot;{change.newValue}&quot;</span>
-                  </>
-								)}
+								{change.field === "deleted"
+									? `Deleted (was ${JSON.parse(change.oldValue).content})`
+									: `${change.field} changed from "${change.oldValue}" to "${change.newValue}"`}
 							</li>
 						))}
 				</ul>
