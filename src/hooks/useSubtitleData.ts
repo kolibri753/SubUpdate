@@ -129,68 +129,34 @@ const useSubtitleData = (initialData: SubData[]) => {
 	};
 
 	const addSubtitleBlockBefore = (index: number) => {
-		const previousBlockTiming = updatedSubtitleData[index - 1]?.timing;
-		const currentBlockTiming = updatedSubtitleData[index]?.timing;
+		const newBlock: SubData = {
+			order: `${index + 1}`,
+			timing: "00:00:00,000 --> 00:00:00,000",
+			content: "",
+		};
+		const updatedData = [...updatedSubtitleData];
+		const previousBlockTiming = updatedData[index - 1]?.timing;
+		const currentBlockTiming = updatedData[index]?.timing;
 
-		let blocksToAdd: SubData[] = [];
 		if (previousBlockTiming && currentBlockTiming) {
-			const [prevStart, prevEnd] = previousBlockTiming.split(" --> ");
-			let [prevEndHour, prevEndMin, prevEndSec] = prevEnd
-				.split(":")
-				.map(parseFloat);
-
-			const [currentStart] = currentBlockTiming.split(" --> ");
-			let [currentStartHour, currentStartMin, currentStartSec] = currentStart
-				.split(":")
-				.map(parseFloat);
-
-			const prevEndTime = prevEndHour * 3600 + prevEndMin * 60 + prevEndSec;
-			const currentStartTime =
-				currentStartHour * 3600 + currentStartMin * 60 + currentStartSec;
-
-			while (prevEndTime + 2 <= currentStartTime) {
-				prevEndSec += 2;
-				if (prevEndSec >= 60) {
-					prevEndMin += 1;
-					prevEndSec -= 60;
-				}
-				if (prevEndMin >= 60) {
-					prevEndHour += 1;
-					prevEndMin -= 60;
-				}
-
-				const newStart = `${String(prevEndHour).padStart(2, "0")}:${String(
-					prevEndMin
-				).padStart(2, "0")}:${String(prevEndSec - 2).padStart(2, "0")},000`;
-				const newEnd = `${String(prevEndHour).padStart(2, "0")}:${String(
-					prevEndMin
-				).padStart(2, "0")}:${String(prevEndSec).padStart(2, "0")},000`;
-
-				const newBlock: SubData = {
-					order: `${index + blocksToAdd.length}`,
-					timing: `${newStart} --> ${newEnd}`,
-					content: "",
-				};
-
-				blocksToAdd.push(newBlock);
-			}
+			const [start] = previousBlockTiming.split(" --> ").slice(-1);
+			const [end] = currentBlockTiming.split(" --> ");
+			newBlock.timing = `${start} --> ${end}`;
 		}
 
-		const updatedData = [...updatedSubtitleData];
-		updatedData.splice(index, 0, ...blocksToAdd);
+		updatedData.splice(index, 0, newBlock);
 		setUpdatedSubtitleData(
 			updatedData.map((subtitle, idx) => ({ ...subtitle, order: `${idx + 1}` }))
 		);
-
-		const blockBeforeIndex = index - 1 >= 0 ? index - 1 : 0;
+		const blockBeforeIndex = index > 0 ? index - 1 : index;
 		const blockBeforeInfo = `Block ${blockBeforeIndex + 1}`;
 		setChangesHistory((prev) => [
 			...prev,
 			{
-				index: index,
+				index,
 				field: "added",
 				oldValue: "",
-				newValue: JSON.stringify(blocksToAdd),
+				newValue: JSON.stringify(newBlock),
 				blockInfo: blockBeforeInfo,
 			},
 		]);
